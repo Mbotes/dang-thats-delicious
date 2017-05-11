@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-const slugs = require('slugs');
+const slug = require('slugs');
 
 const storeSchema = mongoose.Schema({
     name: {
