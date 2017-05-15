@@ -18,8 +18,8 @@ mixin storeForm(store = {})
         input(type="text" id="lat" name="location[coordinates][1]" value=(store.location && store.location.coordinates[1]) )
         - const choices = ['Wifi', 'Open Late', 'Family Friendly', 'Vegetarian', 'Licensed'];
         - const tags = store.tags || []
-        hr
-        ul.tags
+        label(for="tags") Tags
+        ul(name="tags").tags
             each choice in choices
                 .tag.tag__choice
                     input(type="checkbox" id=choice value=choice name="tags" checked=(tags.includes(choice)))
