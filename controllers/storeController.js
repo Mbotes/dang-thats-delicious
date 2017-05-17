@@ -86,7 +86,14 @@ exports.getStoreBySlug = async (req, res, next) => {
 };
 
 exports.getStoresByTag = async (req, res) => {
-  const tags = await Store.getTagsList();
-  const tag = req.params.tag;
-  res.render('tags', {tags, title: 'Tags', tag})
+    const tag = req.params.tag;
+    //check if tag params is attacjhed or/else display all stores that exist.
+    const tagQuery = tag || { $exists: true };
+    //setup my individual promises
+    const tagsPromise =  Store.getTagsList();
+    const storesPromise = Store.find({ tags: tagQuery });
+    //destructuring[tags, stores] -> need to look up the theory behind es6 destructuring
+    //await the return of all promises into a result.
+    const [tags, stores] = await Promise.all([tagsPromise, storesPromise]);
+    res.render('tag', { tags, title: 'Tags', tag, stores });
 };
