@@ -40,4 +40,9 @@ router.post('/register',
 );
 router.get('/logout', authController.logout);
 
+router.get('/account',
+    authController.isLoggedIn,
+    usersController.account);
+router.post('/accounts', catchErrors(usersController.updateAccount));
+
 module.exports = router;
