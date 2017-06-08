@@ -41,11 +41,14 @@ const storeSchema = mongoose.Schema({
 
 });
 
-//define our index
+//define our index for caching store data
 storeSchema.index({
     name: 'text',
     description: 'text'
 });
+
+//define out index for caching store geo-location
+storeSchema.index({ location: '2dsphere' });
 
 storeSchema.pre('save', async function(next) {
     if(!this.isModified('name')) {

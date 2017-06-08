@@ -79,8 +79,8 @@ exports.updateStore = async (req, res) => {
         runValidators: true
     }).exec();
     req.flash('success', `Successfully updated <strong>${store.name}</strong>. <a href="/store/${store.slug}"> View Store </a>`);
-    res.redirect(`/stores/${store.id}/edit`);
     //redirect them to store and tell them update worked
+    res.redirect(`/stores/${store.id}/edit`);
 };
 
 exports.getStoreBySlug = async (req, res, next) => {
@@ -94,7 +94,7 @@ exports.getStoreBySlug = async (req, res, next) => {
 
 exports.getStoresByTag = async (req, res) => {
     const tag = req.params.tag;
-    //check if tag params is attacjhed or/else display all stores that exist.
+    //check if tag params is attached or/else display all stores that exist.
     const tagQuery = tag || { $exists: true };
     //setup my individual promises
     const tagsPromise =  Store.getTagsList();
@@ -124,4 +124,27 @@ exports.searchStores = async (req, res) => {
         //limit results to the highest 5 results
         .limit(5);
     res.json(stores);
+};
+
+
+exports.mapStores = async (req, res) => {
+    const coordinates = [req.query.lng, req.query.lat].map(parseFloat);
+    const q = {
+        location: {
+            $near: {
+                $geometry: {
+                    type: 'Point',
+                    coordinates
+                },
+                $maxDistance: 10000 // 10km
+            }
+        }
+    };
+
+    const stores = await Store.find(q).select('slug name photo description location').limit(10);
+    res.json(stores);
+};
+
+exports.mapPage = (req,res) => {
+    res.render('map', { title: 'Map' });
 };
